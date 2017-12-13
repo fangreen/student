@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= title%></title>
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <%- include("header")%>
+    <div class="box rebox">
+        <h1>注册</h1>
+    </div>
+    <div class="remain">
+     <form class="form-horizontal form_c form_r" method="post" action="/users/register"> 
+        <div class="form-group">
+            <label for="inputUsername3" class="col-sm-2 control-label">学号</label>
+            <div class="col-sm-6 num">
+              <input type="text" class="form-control numid" id="inputUsername3" name="userid" placeholder="学号"><span></span>
+            </div>
+        </div>
+        <div class="form-group">
+                <label for="inputUsername3" class="col-sm-2 control-label">姓名</label>
+                <div class="col-sm-6 uname">
+                  <input type="text" class="form-control" id="inputUsername3" name="username" placeholder="姓名"><span></span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-6 pwd">
+              <input type="password" class="form-control" id="inputPassword3"  name="password" placeholder="密码"><span></span>
+            </div>
+        </div>
+        <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-labe">确认密码</label>
+                <div class="col-sm-6">
+                  <input type="password" class="form-control pwd1" id="inputPassword3"  name="password1" placeholder="密码"><span></span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label for="inputUsername3" class="col-sm-2 control-label">专业</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control object" id="inputUsername3" name="object" placeholder="专业"><span></span>
+            </div>
+      </div>
+      <div class="form-group">
+          <label for="inputUsername3" class="col-sm-2 control-label">学院</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control college" id="inputUsername3" name="college" placeholder="学院"><span></span>
+          </div>
+     </div>
+   <div class="form-group">
+      <label for="inputUsername3" class="col-sm-2 control-label">年级</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control clas" id="inputUsername3" name="clas" placeholder="年级"><span></span>
+      </div>
+    </div>
+    <div class="form-group">
+        <label for="inputUsername3" class="col-sm-2 control-label">电话</label>
+        <div class="col-sm-6 phone">
+          <input type="text" class="form-control" id="inputUsername3" name="phone" placeholder="电话"><span></span>
+        </div>
+      </div>
+      <div class="form-group">
+          <label for="inputUsername3" class="col-sm-2 control-label">身份证号</label>
+          <div class="col-sm-6 ide">
+            <input type="text" class="form-control" id="inputUsername3" name="ide" placeholder="身份证号"><span></span>
+          </div>
+        </div>
+        <div class="form-group">
+            <label for="inputUsername3" class="col-sm-2 control-label">家庭住址</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control address" id="inputUsername3" name="address" placeholder="家庭住址"><span></span>
+            </div>
+          </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <input type="submit" class="btn btn-default sub" value="提交">
+          <button type="reset" class="btn btn-default btn1" onclick="window.location.href='/register'">重置</button>
+        </div>
+      </div>
+    </div>
+    </form>   
+    </div>
+    <%- include("footer")%>
+</body>
+</html>
+<script>
+  $(function(){
+    $(".sub").click(function(){
+          if($(".numid").val()==''||$(".uname>input").val()==''||$(".phone>input").val()==''||$(".pwd>input").val()==''||$(".ide>input").val()==''||$(".clas").val()==''||$(".college").val()==''||$(".object").val()==''||$(".address").val()==''){
+            alert("前完善所有的信息哦！");
+          }else if($(".pwd>input").val()!=$(".pwd1").val()){
+            $(".pwd>input").val("");
+            alert("密码输入不正确");
+          }
+        })
+    $.ajax({
+      url:"/users/smsg",
+      type:"get",
+      success:function(data){
+        $.each(data,function(i){
+          $(".numid").blur(function(){
+          var numid= $(".numid").val();
+          if(/^2\d{9}$/.test(numid)&&data[i].userid!=numid&&numid!=''){
+            $(".num>span").text("学号可用");
+          }else{
+            $(".num>span").text("学号错误");
+            $(".numid").val("");
+          }
+        });
+        $(".uname>input").blur(function(){
+          var uname=$(".uname>input").val();
+          if(/^[\u4e00-\u9fa5]{2,5}$/.test(uname)&&uname!=''){
+            $(".uname>span").text("用户名可用");
+          }else{
+            $(".uname>span").text("用户名错误");
+            $(".uname>input").val("");
+           
+          }
+        });
+        $(".pwd>input").blur(function(){
+          var pwd = $(".pwd>input").val();
+          if(/^.{6,10}$/.test(pwd)&&pwd!=''){
+            $(".pwd>span").text("密码可用") 
+          }else{
+            $(".pwd>input").val("");
+            $(".pwd>span").text("密码为6~12位字符");
+          }
+        });
+        $(".phone>input").blur(function(){
+          var phone = $(".phone>input").val();
+          if(/^1{1}3|4|5|7|8{1}\d{9}$/.test(phone)&&phone!=''){
+             $(".phone>span").text("号码可用") 
+          }else{
+            $(".phone>input").val("");
+            $(".phone>span").text("号码不可用");
+          }
+        });
+        $(".ide>input").blur(function(){
+          var ide = $(".ide>input").val();
+          if(/^\d{18}$/.test(ide)&&ide!==''){
+            $(".ide>span").text("身份证可用") 
+          }else{
+            $(".ide>input").val("");
+            $(".ide>span").text("身份证不可用");
+          }
+        });
+        
+        })
+      }
+    })
+  })
+</script>

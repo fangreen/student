@@ -1,0 +1,18 @@
+<header>
+    <i><%= title%></i>
+    <div class="logout">退出</div>
+    <div class="login" onclick="window.location.href='/'">登陆</div><span>|</span>
+</header>
+<script>
+        $(function(){
+            if($.cookie("id")!=''){
+                $(".login").text($.cookie("id"));
+            }else{
+                $(".login").text("登陆");
+            }
+            $(".logout").click(function(){
+                $.cookie("id","",{expirse:2,path:"/"});
+                window.location.href='/';
+            })
+        })
+    </script>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= title%></title>
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <%- include("header")%>
+        <div class="content">
+            <div class="left">
+                <button type="button" class="btn2 btn-default" aria-label="Left Align">
+                     <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                       个人信息
+                </button>
+                <div class="collapse" id="collapseExample">
+                     <div class="well msg"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span><span>个人基本信息</span></div>
+                     <div class="well remsg"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span>修改个人信息</span></div>
+                </div>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample1" aria-expanded="false" aria-controls="collapseExample">
+                        我的成绩
+                 </button>
+                 <div class="collapse" id="collapseExample1">
+                      <div class="well grade"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span><span>我的各科成绩</span></div>
+                  </div>
+            </div>
+            <div class="right">
+                <p></p>
+                <h2>欢迎进入学生信息管理系统</h2>
+                <!-- <div class="con">
+                        <ul class="ul_left">
+                                <li>姓名</li>
+                                <li>学号</li>
+                                <li>专业</li>
+                                <li>年级</li>
+                                <li>学院</li>
+                                <li>电话</li>
+                                <li>身份证号</li>
+                                <li>家庭住址</li>
+                            </ul>
+                            <ul class="ul_right">
+                              <li></li>
+                              <li></li>
+                              <li>---</li>
+                              <li>---</li>
+                              <li>---</li>
+                              <li>---</li>
+                              <li>---</li>
+                              <li>---</li>
+                         </ul>
+                </div>
+         -->
+            </div>
+        </div>
+    <%- include("footer")%>
+</body>
+</html>
+<script>
+    $(function(){
+        $(".right>p").text("你好："+$.cookie("id")+"!");
+        $(".msg").click(function(){
+            $.ajax({
+            url:"/users/pmsg",
+            type:"get",
+            success:function(data){
+                var str="";
+                str=`<div class="con">
+                        <ul class="ul_left">
+                                <li>姓名</li>
+                                <li>学号</li>
+                                <li>专业</li>
+                                <li>年级</li>
+                                <li>学院</li>
+                                <li>电话</li>
+                                <li>身份证号</li>
+                                <li>家庭住址</li>
+                            </ul>
+                            <ul class="ul_right">
+                              <li>${data.username}</li>
+                              <li>${data.userid}</li>
+                              <li>${data.object}</li>
+                              <li>${data.clas}</li>
+                              <li>${data.college}</li>
+                              <li>${data.phone}</li>
+                              <li>${data.ide}</li>
+                              <li>${data.address}</li>
+                         </ul>
+                </div>`
+                $(".right").html(str);
+            }
+        })
+        });
+        $(".remsg").click(function(){
+            $.ajax({
+            url:"/users/pmsg",
+            type:"get",
+            success:function(data){
+            var str="";
+               str=`
+           <form class="form-horizontal form_c form_r form_re" method="post" action="/users/remsg"> 
+            <div class="form-group">
+                <label for="inputUsername3" class="col-sm-2 control-label">学号</label>
+                <div class="col-sm-6">
+                <input type="text" class="form-control" id="inputUsername3" name="userid" value="${data.userid}" readonly unselectable="on">
+                </div>
+            </div>
+            <div class="form-group">
+                    <label for="inputUsername3" class="col-sm-2 control-label">姓名</label>
+                    <div class="col-sm-6">
+                    <input type="text" class="form-control" id="inputUsername3" name="username" value="${data.username}">
+                    </div>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+                <div class="col-sm-6">
+                <input type="password" class="form-control" id="inputPassword3"  name="password" value="${data.password}">
+                </div>
+            </div>
+            <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-labe">确认密码</label>
+                    <div class="col-sm-6">
+                    <input type="password" class="form-control" id="inputPassword3"  name="password1" value="${data.password}">
+                    </div>
+            </div>
+            <div class="form-group">
+                <label for="inputUsername3" class="col-sm-2 control-label">专业</label>
+                <div class="col-sm-6">
+                <input type="text" class="form-control" id="inputUsername3" name="object" value="${data.object}">
+                </div>
+        </div>
+        <div class="form-group">
+            <label for="inputUsername3" class="col-sm-2 control-label">学院</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="inputUsername3" name="college" value="${data.college}">
+            </div>
+        </div>
+    <div class="form-group">
+        <label for="inputUsername3" class="col-sm-2 control-label">年级</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="inputUsername3" name="clas" value="${data.clas}">
+        </div>
+        </div>
+        <div class="form-group">
+            <label for="inputUsername3" class="col-sm-2 control-label">电话</label>
+            <div class="col-sm-6">
+            <input type="text" class="form-control" id="inputUsername3" name="phone" value="${data.phone}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputUsername3" class="col-sm-2 control-label">身份证号</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="inputUsername3" name="ide" value="${data.ide}">
+            </div>
+            </div>
+            <div class="form-group">
+                <label for="inputUsername3" class="col-sm-2 control-label">家庭住址</label>
+                <div class="col-sm-6">
+                <input type="text" class="form-control" id="inputUsername3" name="address" value="${data.address}">
+                </div>
+            </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" class="btn btn-default btn3" value="提交">
+            </div>
+        </div>
+        </div>
+    </form> `
+     $(".right").html(str);
+          }
+        })
+    });
+    $(".grade").click(function(){
+        var str1='';
+            str1=`<table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>学号</th>
+                            <th>高等数学</th>
+                            <th>专业英语</th>
+                            <th>java</th>
+                            <th>体育</th>
+                            <th>php</th>
+                            <th>计算机网络</th>
+                            <th>思修</th>
+                            <th>线性代数</th>                            
+                          </tr>
+                        </thead>  
+                        <tbody>
+                        </tbody>  
+                    </table>
+                    `
+              $(".right").html(str1);
+         $.ajax({
+             url:"/users/pmsg",
+             type:"get",
+             success:function(data){
+                 var str4='';
+                $.each(data,function(i){
+                    if(data.math==undefined){
+                             str4=`
+                        <tr>
+                            <th scope="row">${data.userid}</th>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>                            
+                          </tr>`
+                    }else{
+                        str4=`
+                        <tr>
+                            <th scope="row">${data.userid}</th>
+                            <td>${data.math}</td>
+                            <td>${data.English}</td>
+                            <td>${data.java}</td>
+                            <td>${data.sport}</td>
+                            <td>${data.php}</td>
+                            <td>${data.network}</td>
+                            <td>${data.think}</td>
+                            <td>${data.sidemath}</td>                            
+                          </tr>`
+                    }
+                   
+                    $(".table>tbody").html(str4);
+                    $(".tck").css("height","600px");
+                })
+            }
+         })
+     })
+ })
+
+</script>

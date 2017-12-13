@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= title%></title>
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/bootstrap/js/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <%- include("header1",{title:"管理员入口"})%>
+        <div class="content">
+            <div class="left">
+                <button type="button" class="btn2 btn-default" aria-label="Left Align">
+                     <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                       学生信息
+                </button>
+                <div class="collapse mag" id="collapseExample">
+                     <div class="well msg"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span><span>学生基本信息</span></div>
+                </div>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample1" aria-expanded="false" aria-controls="collapseExample">
+                       学生成绩
+                 </button>
+                 <div class="collapse" id="collapseExample1">
+                      <div class="well mgrade"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span><span>学生各科成绩</span></div>
+                  </div>
+            </div>
+            <div class="right">
+                <p></p>
+                <h2>欢迎进入学生信息管理系统</h2>
+            </div>
+        </div>
+    <%- include("footer")%>
+</body>
+</html>
+<script>
+    $(function(){
+        if($.cookie("userid")!="110"){
+            window.location.href="/";
+        }
+        $(".right>p").text("你好："+$.cookie("magid")+"!");
+        $(".msg").click(function(){
+            var str1='';
+            str1=`
+            <p class="search"><input type="text" ><input type="button" value="搜索"></p>
+               <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>学号</th>
+                            <th>姓名</th>
+                            <th>专业</th>
+                            <th>年级</th>
+                            <th>学院</th>
+                            <th>住址</th>
+                            <th>电话</th>
+                            <th>身份证号</th>
+                          </tr>
+                        </thead>  
+                        <tbody>
+                        </tbody>  
+                    </table>
+                    <div class="page">
+                        <div class="prev">上一页</div>
+                            <ul>
+                                
+                            </ul>
+                        <div classs="next">下一页</div>
+                    </div>
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+                            </div>
+                            <div class="modal-body tck">
+                                 
+                            </div>
+                            </div>
+                        </div>
+                        </div>   
+                        </div>
+                    `
+              $(".right").html(str1);
+            $.ajax({
+            url:"/users/smsg",
+            type:"get",
+            success:function(data){
+                var str="";
+                $.each(data,function(i){
+                    str+=`
+                          <tr>
+                            <th scope="row">${data[i].userid}</th>
+                            <td>${data[i].username}</td>
+                            <td>${data[i].object}</td>
+                            <td>${data[i].clas}</td>
+                            <td>${data[i].college}</td>
+                            <td>${data[i].address}</td>
+                            <td>${data[i].phone}</td>
+                            <td>${data[i].ide}</td>
+                            <td class="mtd" data-toggle="modal" type="button" data-target="#myModal">修改</td>
+                            <td class="mstd" data-target="#myModal"  data-toggle="modal">删除</td>
+                          </tr>
+                </div>`
+                });
+                $(".tck").css("height","600px");
+                $(".table>tbody").html(str);
+                $(".mtd").click(function(){
+                    var str2='';
+                    str2=`
+                    <form class="form-horizontal form_c form_r form_re" method="post" action="/users/magmsg"> 
+                                <div class="form-group">
+                                    <label for="inputUsername3" class="col-sm-2 control-label">学号</label>
+                                    <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="userid" value="${$(this).parent().children("th").text()}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                        <label for="inputUsername3" class="col-sm-2 control-label">姓名</label>
+                                        <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="inputUsername3" name="username" value="${$(this).parent().children("td").eq(0).text()}">
+                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUsername3" class="col-sm-2 control-label">专业</label>
+                                    <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="object" value="${$(this).parent().children("td").eq(1).text()}">
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">学院</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="college" value="${$(this).parent().children("td").eq(3).text()}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">年级</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="clas" value="${$(this).parent().children("td").eq(2).text()}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">电话</label>
+                                <div class="col-sm-6">
+                                <input type="text" class="form-control" id="inputUsername3" name="phone" value="${$(this).parent().children("td").eq(5).text()}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">身份证号</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="ide" value="${$(this).parent().children("td").eq(6).text()}">
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUsername3" class="col-sm-2 control-label">家庭住址</label>
+                                    <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="address" value="${$(this).parent().children("td").eq(4).text()}">
+                                    </div>
+                                </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                   <div class="modal-footer">
+                                        <input type="submit" class="btn btn-default" value="提交">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                   </div>
+                                </div>
+                            </div>
+                            </div>
+                          </form> 
+                    `
+                   $(".modal-body").html(str2);
+                })
+                $(".mstd").click(function(){
+                    var dataid=$(this).parent().children("th").text();
+                    $(this).parent().remove();
+                    $.ajax({
+                        url:"/users/demsg",
+                        type:"get",
+                        data:{dataid:dataid},
+                        success:function(data){
+                            if(data==1){
+                                var str3='';
+                                    str3=`
+                                 <p>删除成功！</p>
+                                 <div class="modal-footer">
+                                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                 </div>`
+                                 $(".tck").css("height","170px");
+                                 $(".modal-body").html(str3);
+                            }
+                        }
+                    })
+                })
+            }
+        })
+     });
+     $(".mgrade").click(function(){
+        var str1='';
+            str1=`
+            <p class="search"><input type="text" ><input type="button" value="搜索"></p>
+                    <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>学号</th>
+                            <th>高等数学</th>
+                            <th>专业英语</th>
+                            <th>java</th>
+                            <th>体育</th>
+                            <th>php</th>
+                            <th>计算机网络</th>
+                            <th>思修</th>
+                            <th>线性代数</th>                            
+                          </tr>
+                        </thead>  
+                        <tbody>
+                        </tbody>  
+                    </table>
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+                            </div>
+                            <div class="modal-body tck">
+                                 
+                            </div>
+                            </div>
+                        </div>
+                        </div>   
+                        </div>
+                    `
+              $(".right").html(str1);
+         $.ajax({
+             url:"/users/smsg",
+             type:"get",
+             success:function(data){
+                 var str4='';
+                $.each(data,function(i){
+                    if(data[i].math==undefined){
+                             str4+=`
+                        <tr>
+                            <th scope="row">${data[i].userid}</th>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>                            
+                            <td class="mtd" data-toggle="modal" type="button" data-target="#myModal">修改</td>
+                          </tr>`
+                    }else{
+                        str4+=`
+                        <tr>
+                            <th scope="row">${data[i].userid}</th>
+                            <td>${data[i].math}</td>
+                            <td>${data[i].English}</td>
+                            <td>${data[i].java}</td>
+                            <td>${data[i].sport}</td>
+                            <td>${data[i].php}</td>
+                            <td>${data[i].network}</td>
+                            <td>${data[i].think}</td>
+                            <td>${data[i].sidemath}</td>                            
+                            <td class="mtd" data-toggle="modal" type="button" data-target="#myModal">修改</td>
+                          </tr>`
+                    }
+                   
+                    $(".table>tbody").html(str4);
+                    $(".tck").css("height","600px");
+                    $(".mtd").click(function(){
+                    var str5='';
+                    str5=`
+                    <form class="form-horizontal form_c form_r form_re" method="post" action="/users/mgrade"> 
+                                <div class="form-group">
+                                    <label for="inputUsername3" class="col-sm-2 control-label">学号</label>
+                                    <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="userid" value="${$(this).parent().children("th").text()}"  readonly unselectable="on">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                        <label for="inputUsername3" class="col-sm-2 control-label">高等数学</label>
+                                        <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="inputUsername3" name="math" value="${$(this).parent().children("td").eq(0).text()}">
+                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUsername3" class="col-sm-2 control-label">英语</label>
+                                    <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="English" value="${$(this).parent().children("td").eq(1).text()}">
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">java</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="java" value="${$(this).parent().children("td").eq(3).text()}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">体育</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="sport" value="${$(this).parent().children("td").eq(2).text()}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">php</label>
+                                <div class="col-sm-6">
+                                <input type="text" class="form-control" id="inputUsername3" name="php" value="${$(this).parent().children("td").eq(5).text()}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername3" class="col-sm-2 control-label">计算机网络</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="network" value="${$(this).parent().children("td").eq(6).text()}">
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUsername3" class="col-sm-2 control-label">思修</label>
+                                    <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="think" value="${$(this).parent().children("td").eq(4).text()}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUsername3" class="col-sm-2 control-label">线性代数</label>
+                                    <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="inputUsername3" name="sidemath" value="${$(this).parent().children("td").eq(4).text()}">
+                                    </div>
+                                </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                   <div class="modal-footer">
+                                        <input type="submit" class="btn btn-default" value="提交">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                   </div>
+                                </div>
+                            </div>
+                            </div>
+                          </form> 
+                    `
+                   $(".modal-body").html(str5);
+                })
+                })
+             }
+         })
+     });
+    //  $.ajax({
+    //      url:"/users/smsg",
+    //      type:"get",
+    //      success:function(data){
+    //          var len = Math.ceil(data.length/15);
+    //          var str6='';
+    //          for(var i=0;i<len;i++){
+    //             str6+=`
+    //             <li>${i+1}</li>
+    //             `
+    //          }
+    //          $(".page>ul").html(str6);
+    //      }
+    //  })
+})
+</script>
